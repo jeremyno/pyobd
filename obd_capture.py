@@ -1,5 +1,13 @@
 #!/usr/bin/env python
+import sys
+import logging
+import traceback
 
+def log_except_hook(*exc_info):
+    text = "".join(traceback.format_exception(*exc_info))
+    logging.error("Unhandled exception: %s", text)
+
+sys.excepthook = log_except_hook
 import obd_io
 import serial
 import platform
