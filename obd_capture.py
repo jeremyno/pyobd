@@ -66,16 +66,23 @@ class OBD_Capture():
 
         #Loop until Ctrl C is pressed        
         try:
-            while True:
+            nodatacount=0
+            while (nodatacount < 10):
                 localtime = datetime.now()
                 current_time = str(localtime.hour)+":"+str(localtime.minute)+":"+str(localtime.second)+"."+str(localtime.microsecond)
                 log_string = current_time + "\n"
                 results = {}
+                anydata=False
                 for supportedSensor in self.supportedSensorList:
                     sensorIndex = supportedSensor[0]
                     (name, value, unit) = self.port.sensor(sensorIndex)
+                    if (value != "NODATA" and value != "NORESPONSE"):
+                      anydata=True
                     log_string += name + " = " + str(value) + " " + str(unit) + "\n"
-
+                if (anydata):
+                    nodatacount=0
+                else:
+                    nodatacount += 1
                 print log_string,
                 time.sleep(0.5)
 
